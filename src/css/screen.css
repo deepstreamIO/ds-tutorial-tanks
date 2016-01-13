@@ -1,0 +1,17 @@
+*{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+html, body{
+	background: #000;
+	height: 100%;
+}
+
+#wrapper{
+	width: 1600px;
+	height: 900px;
+	background: #fff;
+	margin: 0 auto;
+}

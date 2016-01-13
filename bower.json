@@ -1,0 +1,20 @@
+{
+  "name": "ds-tutorial-tanks",
+  "version": "0.1.0",
+  "homepage": "https://github.com/hoxton-one/ds-tutorial-tanks",
+  "authors": [
+    "Wolfram Hempel <hempel.wolfram@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "pixi.js": "~3.0.9",
+    "requirejs": "~2.1.22"
+  }
+}
