@@ -4,8 +4,9 @@ define(function( require ){
 
 	function World( settings ) {
 		this._settings = settings;
-		this._stage = new PIXI.Stage();
-		this._renderer = PIXI.autoDetectRenderer( settings.width, settings.height );
+		this._stage = new PIXI.Container();
+		this._renderer = this._getRenderer();
+		this._renderer.transparent = true;
 		this._settings.container.appendChild( this._renderer.view );
 		this._objects = [];
 		this._render();
@@ -14,6 +15,13 @@ define(function( require ){
 	World.prototype.add = function( object ) {
 		this._objects.push( object );
 		this._stage.addChild( object.getPixiObject() );
+	};
+
+	World.prototype._getRenderer = function() {
+		var options = {
+			transparent: true
+		};
+		return PIXI.autoDetectRenderer( this._settings.width, this._settings.height, options );
 	};
 
 	World.prototype._render = function() {

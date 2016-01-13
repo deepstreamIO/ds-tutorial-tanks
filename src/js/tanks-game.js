@@ -18,21 +18,34 @@ define(function( require ){
 	TanksGame.prototype._init = function() {
 		this._world = new World( this._settings );
 		
-		var myTank = new Tank({
+		var tankA = new Tank({
+			x: 300,
+			y: 300,
+			color: 4
+		});
+
+		tankA.setRotation( 1 );
+		tankA.setPosition( 200, 200 );
+		tankA.aimAt( 400, 500 );
+
+		this._world.add( tankA );
+
+		var tankB = new Tank({
 			x: 300,
 			y: 300,
 			color: 0
 		});
 
-		myTank.setRotation( 2 );
-		myTank.setPosition( 400, 500 );
-		myTank.aimAt( 0, 0 );
+		tankB.setRotation( 2 );
+		tankB.setPosition( 400, 500 );
+		tankB.aimAt( 0, 0 );
+		tankB.explode();
+		//tankB.aimAt( tankA.getPosition().x, tankA.getPosition().y );
+		this._world.add( tankB );
 
-		this._world.add( myTank );
-
-		// this._settings.container.onmousemove = function( e ) {
-		// 	myTank.lookAt( e.offsetX, e.offsetY );
-		// };
+		this._settings.container.onmousemove = function( e ) {
+			tankA.lookAt( e.offsetX, e.offsetY );
+		};
 	};
 
 

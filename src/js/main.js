@@ -7,7 +7,7 @@ requirejs.config({
 
 require( ['tanks-game'], function( TanksGame ){
 	new TanksGame({
-		container: document.getElementById( 'wrapper' ),
+		container: document.getElementById( 'pixi-container' ),
 		width: 1600,
 		height: 900
 	});

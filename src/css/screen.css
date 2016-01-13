@@ -12,6 +12,30 @@ html, body{
 #wrapper{
 	width: 1600px;
 	height: 900px;
-	background: #fff;
+	background: url(../img/bg-ground.png);
 	margin: 0 auto;
+	position: relative;
+}
+
+#pixi-container,
+#objects-overlay,
+#trees-overlay{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	left: 0;
+}
+
+#objects-overlay,
+#trees-overlay{
+	pointer-events: none;
+}
+#objects-overlay{
+	background: url(../img/bg-objects.png);
+}
+
+#trees-overlay{
+	background: url(../img/bg-trees.png);
 }
