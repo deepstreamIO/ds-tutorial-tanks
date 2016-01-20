@@ -37,7 +37,6 @@ World.prototype._createTank = function( tankName ) {
 		turretRotation: 0,
 		rotation: 0,
 		destroyed: false,
-		acceleration: 0,
 		health: 3,
 		kills: 0, 
 		died: 0
@@ -207,8 +206,6 @@ World.prototype._destroyTank = function( tankName ) {
 	var tank = this._tanks[ tankName ];
 	delete this._tanks[ tankName ];
 	this._tanksList.removeEntry( tankName );
-	tank.view.delete();
-	tank.control.delete();
 };
 
 
@@ -295,7 +292,7 @@ World.prototype._getColor = function() {
 };
 
 World.prototype._getSymbol = function() {
-	var symbol = symbols[ Math.floor( ( Math.random() * symbols.length ) + 1 ) ];
+	var symbol = symbols[ Math.floor( ( Math.random() * symbols.length ) ) ];
 	return symbol;
 };
 
