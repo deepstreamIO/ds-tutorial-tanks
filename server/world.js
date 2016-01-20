@@ -148,7 +148,7 @@ World.prototype._moveTank = function( direction, tank, tanks ) {
 		position.y += ( Math.cos( rotation ) * tankSpeed );		
 	}
 
-	if( this._collidesWithOtherTanks( position, tankView.name ) ) {
+	if( this._collidesWithOtherTanks( position, tankView.name ) || this._collidesWithBorder( position ) ) {
 		return;
 	}
 
@@ -267,6 +267,26 @@ World.prototype._collidesWithOtherTanks = function( position, tankName ) {
 		if( this._intersects( position, tanks[ _tankName ].view.get( 'position' ), tankDimensions, tankDimensions ) ) {
 			return true;
 		}
+	}
+
+	return false;
+};
+
+World.prototype._collidesWithBorder = function( position ) {
+	if( this._intersects( position, { x: 0, y: 0 }, tankDimensions, { x: 0, y: 900 } ) ) {
+		return true;
+	}
+
+	if( this._intersects( position, { x: 1600, y: 0 }, tankDimensions, { x: 0, y: 900 } ) ) {
+		return true;
+	}
+
+	if( this._intersects( position, { x: 0, y: 0 }, tankDimensions, { x: 1600, y: 0 } ) ) {
+		return true;
+	}
+
+	if( this._intersects( position, { x: 0, y: 900 }, tankDimensions, { x: 1600, y: 0 } ) ) {
+		return true;
 	}
 
 	return false;
