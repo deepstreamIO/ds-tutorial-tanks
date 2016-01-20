@@ -13,8 +13,8 @@ define(function( require ){
 	function Tank( settings ) {
 		this._container = new PIXI.Container();
 		
-		this._container.position.x = settings.x;
-		this._container.position.y = settings.y;
+		this._container.position.x = settings.position.x;
+		this._container.position.y = settings.position.y;
 
 		this._color = COLORS[ settings.color ];
 		
@@ -67,20 +67,14 @@ define(function( require ){
 		this._smoke.start();
 	};
 
+	Tank.prototype.revive = function() {
+		this._container.addChild( this._turret );
+		this._container.removeChild( this._smoke.getPixiObject() );
+		this._smoke.stop();
+	};
+
 	Tank.prototype.getPixiObject = function() {
 		return this._container;
-	};
-
-
-	Tank.prototype.update = function() {
-
-	};
-
-	Tank.prototype._toRadians = function( x, y ) {
-		var _x = this._container.position.x - x;
-		var _y = this._container.position.y - y;
-
-		return Math.atan2( _y, _x ) - Math.PI / 2;
 	};
 
 	return Tank;

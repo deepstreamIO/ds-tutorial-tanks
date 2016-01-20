@@ -17,6 +17,11 @@ define(function( require ){
 		this._stage.addChild( object.getPixiObject() );
 	};
 
+	World.prototype.remove = function( object ) {
+		this._objects.splice( this._objects.indexOf( object ), 1 );
+		this._stage.removeChild( object.getPixiObject() );
+	};
+
 	World.prototype._getRenderer = function() {
 		var options = {
 			transparent: true
@@ -25,9 +30,6 @@ define(function( require ){
 	};
 
 	World.prototype._render = function() {
-		for( var i = 0; i < this._objects.length; i++ ) {
-			this._objects[ i ].update();
-		}
 		this._renderer.render( this._stage );
 		requestAnimationFrame( this._render.bind( this ) );
 	};

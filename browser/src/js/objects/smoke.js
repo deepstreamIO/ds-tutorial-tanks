@@ -1,4 +1,4 @@
-define(function( require ){
+define(function( require ) {
 	var PIXI = require( 'pixi' );
 	var ONE_THIRD = 1 / 3;
 	var SmokeCloud = require( './smoke-cloud' );
@@ -19,28 +19,39 @@ define(function( require ){
 		this._phase = 0;
 		this._step = 0.005;
 		this._animationFrameId = null;
+		this._active = false;
 	}
 
 	Smoke.prototype.start = function() {
+		this._active = true;
+		this._updatePhase();
+	};
+
+	Smoke.prototype.stop = function() {
+		this._active = false;
 		this._updatePhase();
 	};
 
 	Smoke.prototype._updatePhase = function() {
-		this._phase += this._step;
-		if( this._phase > ONE_THIRD ) {
+		if( this._active ) {
+			this._phase += this._step;
+			if( this._phase > ONE_THIRD ) {
+				this._phase = 0;
+			}
+			this._smokeCloud1.setPhase( this._phase );
+			this._smokeCloud2.setPhase( this._phase + ONE_THIRD );
+			this._smokeCloud3.setPhase( this._phase + ONE_THIRD * 2 );
+		
+			this._animationFrameId = requestAnimationFrame( this._updatePhase.bind( this ) );
+		} else {
 			this._phase = 0;
+			this._step = 0.005;
 		}
-		this._smokeCloud1.setPhase( this._phase );
-		this._smokeCloud2.setPhase( this._phase + ONE_THIRD );
-		this._smokeCloud3.setPhase( this._phase + ONE_THIRD * 2 );
-		this._animationFrameId = requestAnimationFrame( this._updatePhase.bind( this ) );
 	};
-
 
 	Smoke.prototype.getPixiObject = function() {
 		return this._container;
 	};
 
 	return Smoke;
-
 });
