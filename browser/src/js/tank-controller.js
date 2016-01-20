@@ -1,7 +1,7 @@
 define(function( require ){
 
 	function TankController( ds, tankName ) {
-		ds.event.emit( 'create-tank', tankName );
+		ds.event.emit( 'join-game', tankName );
 
 		var tankView = ds.record.getRecord( tankName );
 		var tankControl = ds.record.getRecord( tankName + '-control' );
@@ -39,6 +39,10 @@ define(function( require ){
 		document.body.onclick = function( e ) {
 			ds.event.emit( 'fire', tankName );
 		}.bind( this );
+
+		window.onunload= function() {
+			ds.event.emit( 'leave-game', tankName );
+		};
 	}
 
 	function toRadians( containerPosition, x, y ) {

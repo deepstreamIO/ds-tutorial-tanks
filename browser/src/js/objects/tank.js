@@ -11,6 +11,8 @@ define(function( require ){
 	];
 
 	function Tank( settings ) {
+		this._settings = settings;
+
 		this._container = new PIXI.Container();
 		
 		this._container.position.x = settings.position.x;
@@ -57,6 +59,10 @@ define(function( require ){
 	Tank.prototype.setPosition = function( x, y ) {
 		this._container.position.x = x;
 		this._container.position.y = y;
+	};
+
+	Tank.prototype.setKills = function( kills ) {
+		this._symbol.text = this._settings.symbol + ' ' + kills;
 	};
 
 	Tank.prototype.setTurretRotation = function( rotation ) {

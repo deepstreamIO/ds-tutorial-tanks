@@ -20,19 +20,14 @@ function World( settings ) {
 	this._tanksList.setEntries( [] );
 	this._bulletsList.setEntries( [] );
 
-	this._ds.record.listen( '^.*-control', this._createTank.bind( this ) );
+	this._ds.event.subscribe( 'join-game', this._createTank.bind( this ) );
+	this._ds.event.subscribe( 'leave-game', this._destroyTank.bind( this ) );
 	this._ds.event.subscribe( 'fire', this._fireBullet.bind( this ) );
 
 	this._updateState();
 }
 
-World.prototype._createTank = function( controlName, added ) {
-	var tankName = controlName.split( '-' )[ 0 ];
-	if( !added ) {
-		this._destroyTank( this._tanks[ tankName ] );
-		return;
-	}
-
+World.prototype._createTank = function( tankName ) {
 	var tank = this._ds.record.getRecord( tankName );
 	tank.set( {
 		// Server Generated
@@ -208,10 +203,12 @@ World.prototype._destroyBullet = function( bullet ) {
 	delete this._bullets[ bullet.name ];
 };
 
-World.prototype._destroyTank = function( tank ) {
-	this._tanksList.removeEntry( tank.name );
-	tank.delete();
-	delete this._tanks[ tank.name ];
+World.prototype._destroyTank = function( tankName ) {
+	var tank = this._tanks[ tankName ];
+	delete this._tanks[ tankName ];
+	this._tanksList.removeEntry( tankName );
+	tank.view.delete();
+	tank.control.delete();
 };
 
 

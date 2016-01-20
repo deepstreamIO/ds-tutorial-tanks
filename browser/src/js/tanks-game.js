@@ -23,6 +23,11 @@ define(function( require ){
 		this._world = new World( this._settings );
 
 		/**
+		* Create Tank Controls
+		**/
+		this._settings.tankName && new TankController( this._ds, this._settings.tankName );
+
+		/**
 		* Listen to Tanks
 		*/		
 		this._tanksList = this._ds.record.getList( this._settings.worldName + '/tanks' );
@@ -41,19 +46,19 @@ define(function( require ){
 		this._bulletsList.whenReady( function( bullets ) {
 			bullets.getEntries().forEach( bulletAdded.bind( this ) );
 		}.bind( this ) );
-
-		/**
-		* Create Tank Controls
-		**/
-		this._settings.tankName && new TankController( this._ds, this._settings.tankName );
 	}
 
 	function tankAdded( tankName ) {
 		this._ds.record
 			.getRecord( tankName )
 			.whenReady( function( tankRecord ) {
+				console.log( tankRecord.get() )
 				var tank = new Tank( tankRecord.get() );
 				this._world.add( tank );
+
+				tankRecord.subscribe( 'kills', function( kills ) {
+					tank.setKills( kills );
+				});
 
 				tankRecord.subscribe( 'rotation', function( rotation ) {
 					tank.setRotation( rotation );

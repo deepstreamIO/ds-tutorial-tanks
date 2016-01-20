@@ -7,18 +7,19 @@ requirejs.config({
 });
 
 require( ['tanks-game', 'deepstream' ], function( TanksGame, deepstream ){
-	var name = '';
-	var ds = deepstream( 'localhost:6020' ).login( { name: name }, function( valid ) {
+	var name = getQueryParams( window.location.search ).tankName;
+	var ds = deepstream( 'localhost:6020' ).login( { username: name }, function( valid ) {
 		if( valid ) {
 			new TanksGame({
 				container: document.getElementById( 'pixi-container' ),
 				width: 1600,
 				height: 900,
-				name: name, 
 				deepstream: ds,
 				worldName: getQueryParams( window.location.search ).world || 'test-world',
-				tankName: getQueryParams( window.location.search ).tankName || null
+				tankName: name
 			});
+		} else {
+			console.log( arguments, name );
 		}
 	} )
 });
