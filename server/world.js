@@ -20,13 +20,19 @@ function World( settings ) {
 	this._tanksList.setEntries( [] );
 	this._bulletsList.setEntries( [] );
 
-	this._ds.event.subscribe( 'create-tank', this._createTank.bind( this ) );
+	this._ds.record.listen( '^.*-control', this._createTank.bind( this ) );
 	this._ds.event.subscribe( 'fire', this._fireBullet.bind( this ) );
 
 	this._updateState();
 }
 
-World.prototype._createTank = function( tankName ) {
+World.prototype._createTank = function( controlName, added ) {
+	var tankName = controlName.split( '-' )[ 0 ];
+	if( !added ) {
+		this._destroyTank( this._tanks[ tankName ] );
+		return;
+	}
+
 	var tank = this._ds.record.getRecord( tankName );
 	tank.set( {
 		// Server Generated
@@ -38,7 +44,8 @@ World.prototype._createTank = function( tankName ) {
 		destroyed: false,
 		acceleration: 0,
 		health: 3,
-		kills: 0
+		kills: 0, 
+		died: 0
 	} );
 
 	var tankControl = this._ds.record.getRecord( tankName + '-control' );
@@ -50,10 +57,7 @@ World.prototype._createTank = function( tankName ) {
 			forwards: false,
 			backwards: false 
 		},
-		turretDirection: {
-			left: false,
-			right: false
-		}
+		turretRotation: 0
 	} );
 
 	tank.whenReady( function() {
@@ -175,7 +179,8 @@ World.prototype._moveBullet = function( bullet, tanks ) {
 			tankView.set( 'health', tankHealth );
 			if( tankHealth === 0 ) {
 				tankView.set( 'destroyed', true );
-				tank[ bullet.get( 'owner') ].set( );
+				this._increaseTankKills( bullet.get( 'owner' ) );
+				this._increaseTankDeaths( tankName );
 				setTimeout( this._respawnTank.bind( this, tankName ), 2000 );
 			}
 			this._destroyBullet( bullet );
@@ -203,18 +208,19 @@ World.prototype._destroyBullet = function( bullet ) {
 	delete this._bullets[ bullet.name ];
 };
 
+World.prototype._destroyTank = function( tank ) {
+	this._tanksList.removeEntry( tank.name );
+	tank.delete();
+	delete this._tanks[ tank.name ];
+};
+
+
 World.prototype._respawnTank = function( tankName ) {
 	var tank = this._tanks[ tankName ];
 
-	tank.view.set( {
-		// Server Generated
-		position: this._getInitialPosition(),
-		color: tank.view.get( 'color' ), 
-		turretRotation: 0,
-		rotation: 0,
-		destroyed: false,
-		health: 3
-	} );
+	tank.view.set( 'position', this._getInitialPosition() );
+	tank.view.set( 'destroyed', false );
+	tank.view.set( 'health', 3 );
 
 	tank.control.set( {
 		//Client Generated
@@ -224,10 +230,7 @@ World.prototype._respawnTank = function( tankName ) {
 			forwards: false,
 			backwards: false 
 		},
-		turretDirection: {
-			left: false,
-			right: false
-		}
+		turretRotation: 0
 	} );
 };
 
@@ -299,9 +302,16 @@ World.prototype._getSymbol = function() {
 	return symbol;
 };
 
-World.prototype._increaseTankScore = function( tankName ) {
-	var symbol = symbols[ Math.floor( ( Math.random() * symbols.length ) + 1 ) ];
-	return symbol;
+World.prototype._increaseTankKills = function( tankName ) {
+	var tank = this._tanks[ tankName ].view;
+	var kills = tank.get( 'kills' ) + 1;
+	tank.set( 'kills', kills ); 
+};
+
+World.prototype._increaseTankDeaths = function( tankName ) {
+	var tank = this._tanks[ tankName ].view;
+	var deaths = tank.get( 'deaths' ) + 1;
+	tank.set( 'deaths', deaths ); 
 };
 
 module.exports = World;
