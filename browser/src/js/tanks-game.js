@@ -68,7 +68,6 @@ define(function( require ){
 				});
 				
 				tankRecord.subscribe( 'destroyed', function( destroyed ) {
-					console.log( 'destroyed', destroyed )
 					if( destroyed ) {
 						tank.explode();
 					} else {
@@ -90,7 +89,7 @@ define(function( require ){
 			.whenReady( function( bulletRecord ) {
 
 				var bullet = new Bullet( bulletRecord.get() );
-				this._world.add( bullet );
+				this._world.addToBottom( bullet );
 
 				bulletRecord.subscribe( 'position', function( position ) {
 					bullet.setPosition( position.x, position.y );

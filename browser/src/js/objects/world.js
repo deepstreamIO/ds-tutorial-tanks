@@ -17,6 +17,11 @@ define(function( require ){
 		this._stage.addChild( object.getPixiObject() );
 	};
 
+	World.prototype.addToBottom = function( object ) {
+		this._objects.splice( 0, 0, object );
+		this._stage.addChildAt( object.getPixiObject(), 0 );
+	};
+
 	World.prototype.remove = function( object ) {
 		this._objects.splice( this._objects.indexOf( object ), 1 );
 		this._stage.removeChild( object.getPixiObject() );

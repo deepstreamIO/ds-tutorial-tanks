@@ -25,10 +25,16 @@ define(function( require ){
 
 		this._container.addChild( this._body );
 		
+		// Symbol
+		this._symbol = new PIXI.Text( settings.symbol, {font:"20px Arial", fill:"lightgrey"});
+		this._symbol.pivot.x = 0;
+		this._symbol.pivot.y = 0;
+		this._container.addChild( this._symbol );
+
 		// Turret
 		this._turret = PIXI.Sprite.fromFrame( 'barrel' + this._color + '.png' );
 
-		this._turret.pivot.x = 8;
+		this._turret.pivot.x = 6;
 		this._turret.pivot.y = 44;
 		this._container.addChild( this._turret );
 
@@ -59,6 +65,7 @@ define(function( require ){
 
 	Tank.prototype.setRotation = function( rotation ) {
 		this._body.rotation = rotation;
+		this._symbol.rotation = rotation;
 	};
 
 	Tank.prototype.explode = function() {
