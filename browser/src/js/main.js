@@ -8,7 +8,7 @@ requirejs.config({
 
 require( ['tanks-game', 'deepstream' ], function( TanksGame, deepstream ){
 	var name = '';
-	var ds = deepstream( 'localhost:6020' ).login( { name: name }, function( valid ) {
+	var ds = deepstream( '52.29.184.11:6020' ).login( { name: name }, function( valid ) {
 		if( valid ) {
 			new TanksGame({
 				container: document.getElementById( 'pixi-container' ),

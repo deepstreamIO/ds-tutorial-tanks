@@ -3,36 +3,37 @@ define(function( require ){
 	function TankController( ds, tankName ) {
 		ds.event.emit( 'create-tank', tankName );
 
-		var tank = ds.record.getRecord( tankName );
+		var tankView = ds.record.getRecord( tankName );
+		var tankControl = ds.record.getRecord( tankName + '-control' );
 
 		document.body.onkeydown = function( e ) {
 			if( e.which === 39 ) {
-				tank.set( 'direction.right', true );
+				tankControl.set( 'direction.right', true );
 			} else if( e.which === 37 ) {
-				tank.set( 'direction.left', true );
+				tankControl.set( 'direction.left', true );
 			} else if( e.which === 38 ) {
-				tank.set( 'direction.forwards', true );
+				tankControl.set( 'direction.forwards', true );
 			} else if( e.which === 40 ) {
-				tank.set( 'direction.backwards', true );
+				tankControl.set( 'direction.backwards', true );
 			}
 			e.preventDefault();
 		};
 
 		document.body.onkeyup = function( e ) {
 			if( e.which === 39 ) {
-				tank.emit( 'direction.right', false );
+				tankControl.set( 'direction.right', false );
 			} else if( e.which === 37 ) {
-				tank.set( 'direction.left', false );
+				tankControl.set( 'direction.left', false );
 			} else if( e.which === 38 ) {
-				tank.set( 'direction.forwards', false );
+				tankControl.set( 'direction.forwards', false );
 			} else if( e.which === 40 ) {
-				tank.set( 'direction.backwards', false );
+				tankControl.set( 'direction.backwards', false );
 			}
 			e.preventDefault();
 		};
 
 		document.body.onmousemove = function( e ) {
-			tank.set( 'turretRotation', toRadians( tank.get( 'position' ), e.offsetX, e.offsetY ) );
+			tankControl.set( 'turretRotation', toRadians( tankView.get( 'position' ), e.offsetX, e.offsetY ) );
 		};
 
 		document.body.onclick = function( e ) {
