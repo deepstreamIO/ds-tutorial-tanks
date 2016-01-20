@@ -24,7 +24,6 @@ function World( settings ) {
 
 World.prototype._createTank = function( tankName ) {
 	var tank = this._ds.record.getRecord( tankName );
-
 	tank.set( {
 		// Server Generated
 		position: this._getInitialPosition(),
@@ -34,8 +33,11 @@ World.prototype._createTank = function( tankName ) {
 		rotation: 0,
 		destroyed: false,
 		acceleration: 0,
-		health: 3,
+		health: 3
+	} );
 
+	var tankControl = this._ds.record.getRecord( tankName + '-control' );
+	tankControl.set( {
 		//Client Generated
 		direction: {
 			left: false,
@@ -50,15 +52,20 @@ World.prototype._createTank = function( tankName ) {
 	} );
 
 	tank.whenReady( function() {
-		if( this._tanksList.getEntries().indexOf( tankName ) === -1 ) {
-			this._tanksList.addEntry( tankName );
-		}
-		this._tanks[ tankName ] = tank;
+		tankControl.whenReady( function() {
+			if( this._tanksList.getEntries().indexOf( tankName ) === -1 ) {
+				this._tanksList.addEntry( tankName );
+			}
+			this._tanks[ tankName ] = {
+				view: tank,
+				control: tankControl
+			};
+		}.bind( this ) );
 	}.bind( this ) );
 };
 
 World.prototype._fireBullet = function( tankName ) {
-	var tank = this._tanks[ tankName ];
+	var tank = this._tanks[ tankName ].view;
 	var bulletID = this._ds.getUid();
 	var bullet = this._ds.record.getRecord( bulletID );
 
@@ -85,8 +92,11 @@ World.prototype._updateState = function() {
 
 	for( var tankName in tanks ) {
 		tank = tanks[ tankName ];
-		direction = tank.get( 'direction' );
-		turret = tank.get( 'turretDirection' );
+		tankView = tank.view;
+		tankControl = tank.control;
+
+		direction = tankControl.get( 'direction' );
+		turret = tankControl.get( 'turretDirection' );
 
 		if( 
 			( direction.left || direction.right ) && !( direction.left && direction.right ) 
@@ -96,9 +106,7 @@ World.prototype._updateState = function() {
 			this._moveTank( direction, tank, tanks );
 		}
 
-		if( turret.left || turret.right && !( turret.left && turret.right ) ) {
-			this._moveTurret( tank, turret );
-		}
+		tankView.set( 'turretRotation', tankControl.get( 'turretRotation' ) );
 	}
 
 	// Update bullets
@@ -112,7 +120,10 @@ World.prototype._updateState = function() {
 };
 
 World.prototype._moveTank = function( direction, tank, tanks ) {
-	var rotation = tank.get( 'rotation' );	
+	var tankView = tank.view;
+	var tankControl = tank.control;
+
+	var rotation = tankView.get( 'rotation' );	
 
 	if( direction.left ) {
 		rotation -= ( Math.PI / 90 );		
@@ -126,8 +137,8 @@ World.prototype._moveTank = function( direction, tank, tanks ) {
 		rotation = Math.PI * 2;
 	}
 
-	var position = tank.get( 'position' );	
-	var dimensions = tank.get( 'dimensions' );
+	var position = tankView.get( 'position' );	
+	var dimensions = tankView.get( 'dimensions' );
 
 	if( direction.forwards ) {
 		position.x += ( Math.sin( rotation ) * tankSpeed );		
@@ -142,23 +153,13 @@ World.prototype._moveTank = function( direction, tank, tanks ) {
 		if( tanks[ tankName ] === tank ) {
 			continue;
 		}
-		if( this._intersects( position, tanks[ tankName ].get( 'position' ), dimensions, dimensions ) ) {
+		if( this._intersects( position, tanks[ tankName ].view.get( 'position' ), dimensions, dimensions ) ) {
 			return;
 		}
 	}
 
-	tank.set( 'rotation', rotation );
-	tank.set( 'position', position );
-};
-
-World.prototype._moveTurret = function( tank, turret ) {
-	var turretRotation = tank.get( 'turretRotation' );
-	if( turret.left ) {
-		turretRotation -= 0.0156;
-	} else {
-		turretRotation += 0.0156;
-	}
-	tank.set( 'turretRotation', turretRotation );
+	tankView.set( 'rotation', rotation );
+	tankView.set( 'position', position );
 };
 
 World.prototype._moveBullet = function( bullet, tanks ) {
@@ -167,19 +168,19 @@ World.prototype._moveBullet = function( bullet, tanks ) {
 	var rangeRemaining = bullet.get( 'rangeRemaining');
 	var rotation = bullet.get( 'rotation');
 
-	var tank;
+	var tankView;
 	var tankHealth;
 	for( var tankName in tanks ) {
-		tank = tanks[ tankName ];
+		tankView = tanks[ tankName ].view;
 		if( bullet.get( 'owner' ) === tankName ) {
 			continue;
 		}
-		if( this._intersects( position, tank.get( 'position' ), bulletDimensions, tank.get( 'dimensions' ) ) ) {
-			tankHealth =  tank.get( 'health' ) - 1;
-			tank.set( 'health', tankHealth );
+		if( this._intersects( position, tankView.get( 'position' ), bulletDimensions, tankView.get( 'dimensions' ) ) ) {
+			tankHealth =  tankView.get( 'health' ) - 1;
+			tankView.set( 'health', tankHealth );
 			if( tankHealth === 0 ) {
-				tank.set( 'destroyed', true );
-				setTimeout( this._respawnTank.bind( this, tank ), 2000 );
+				tankView.set( 'destroyed', true );
+				setTimeout( this._respawnTank.bind( this, tankName ), 2000 );
 			}
 			this._destroyBullet( bullet );
 			return;
@@ -206,18 +207,21 @@ World.prototype._destroyBullet = function( bullet ) {
 	delete this._bullets[ bullet.name ];
 };
 
-World.prototype._respawnTank = function( tank ) {
-	tank.set( {
+World.prototype._respawnTank = function( tankName ) {
+	var tank = this._tanks[ tankName ];
+
+	tank.view.set( {
 		// Server Generated
 		position: this._getInitialPosition(),
-		color: tank.get( 'color' ), 
+		color: tank.view.get( 'color' ), 
 		dimensions: { x: 75, y: 70 },
 		turretRotation: 0,
 		rotation: 0,
 		destroyed: false,
-		acceleration: 0,
-		health: 3,
+		health: 3
+	} );
 
+	tank.control.set( {
 		//Client Generated
 		direction: {
 			left: false,
@@ -263,9 +267,11 @@ World.prototype._intersects = function( objectA, objectB, objectASize, objectBSi
 };
 
 World.prototype._getInitialPosition = function() {
+	var x = 1000 *  Math.random() / 2;
+	var y = 1000 *  Math.random() / 2;
 	return { 
-		x: 1000 *  Math.random() / 2,
-		y: 1000 *  Math.random() / 2
+		x: x,
+		y: y
 	};
 };
 
