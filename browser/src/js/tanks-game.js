@@ -30,7 +30,7 @@ define(function( require ){
 		/**
 		* Listen to Tanks
 		*/		
-		this._tanksList = this._ds.record.getList( this._settings.worldName + '/tanks' );
+		this._tanksList = this._ds.record.getList( 'tanks' );
 		this._tanksList.on( 'entry-added', tankAdded.bind( this ) );
 		this._tanksList.on( 'entry-removed', tankRemoved.bind( this ) );
 		this._tanksList.whenReady( function( tanks ) {
@@ -40,7 +40,7 @@ define(function( require ){
 		/**
 		* Listen to Bullet
 		*/
-		this._bulletsList = this._ds.record.getList( this._settings.worldName + '/bullets' );
+		this._bulletsList = this._ds.record.getList( 'bullets' );
 		this._bulletsList.on( 'entry-added', bulletAdded.bind( this ) );
 		this._bulletsList.on( 'entry-removed', bulletRemoved.bind( this ) );
 		this._bulletsList.whenReady( function( bullets ) {
@@ -52,7 +52,6 @@ define(function( require ){
 		this._ds.record
 			.getRecord( tankName )
 			.whenReady( function( tankRecord ) {
-				console.log( tankRecord.get() )
 				var tank = new Tank( tankRecord.get() );
 				this._world.add( tank );
 

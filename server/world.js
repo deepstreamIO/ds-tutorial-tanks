@@ -14,8 +14,8 @@ function World( settings ) {
 	this._tanks = {};
 	this._bullets = {};
 
-	this._tanksList = this._ds.record.getList( settings.worldName + '/tanks' );	
-	this._bulletsList = this._ds.record.getList( settings.worldName + '/bullets' );
+	this._tanksList = this._ds.record.getList( 'tanks' );	
+	this._bulletsList = this._ds.record.getList( 'bullets' );
 
 	this._tanksList.setEntries( [] );
 	this._bulletsList.setEntries( [] );
@@ -69,6 +69,10 @@ World.prototype._createTank = function( tankName ) {
 
 World.prototype._fireBullet = function( tankName ) {
 	var tank = this._tanks[ tankName ].view;
+	if( tank.get( 'destroyed') ) {
+		return;
+	}
+
 	var bulletID = this._ds.getUid();
 	var bullet = this._ds.record.getRecord( bulletID );
 
@@ -90,7 +94,7 @@ World.prototype._fireBullet = function( tankName ) {
 
 World.prototype._updateState = function() {
 	var tanks = this._tanks;
-	var tank, direction;
+	var tank, direction, destroyed;
 
 	for( var tankName in tanks ) {
 		tank = tanks[ tankName ];
@@ -99,13 +103,14 @@ World.prototype._updateState = function() {
 
 		direction = tankControl.get( 'direction' );
 		turret = tankControl.get( 'turretDirection' );
+		destroyed = tankView.get( 'destroyed' );
 
 		if( 
 			( direction.left || direction.right ) && !( direction.left && direction.right ) 
 			|| 
 			( direction.forwards || direction.backwards ) && !( direction.forwards && direction.backwards ) 
 		) {
-			this._moveTank( direction, tank, tanks );
+			!destroyed && this._moveTank( direction, tank, tanks );
 		}
 
 		tankView.set( 'turretRotation', tankControl.get( 'turretRotation' ) );

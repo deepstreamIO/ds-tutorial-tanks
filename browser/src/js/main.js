@@ -15,7 +15,6 @@ require( ['tanks-game', 'deepstream' ], function( TanksGame, deepstream ){
 				width: 1600,
 				height: 900,
 				deepstream: ds,
-				worldName: getQueryParams( window.location.search ).world || 'test-world',
 				tankName: name
 			});
 		} else {
