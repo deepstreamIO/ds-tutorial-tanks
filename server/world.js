@@ -1,6 +1,7 @@
 var bulletRange = 30;
 var bulletSpeed = 10;
 var tankSpeed = 1;
+var symbols = ['♀','♁','♂','♃','♄','♅','♆','♇','♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓','♔','♕','♖','♗','♘','♙','♚','♛','♜','♝','♞','♟'];
 
 function World( settings ) {
 	this._settings = settings;
@@ -28,6 +29,7 @@ World.prototype._createTank = function( tankName ) {
 		// Server Generated
 		position: this._getInitialPosition(),
 		color: this._getColor(),
+		symbol: this._getSymbol(),
 		dimensions: { x: 75, y: 70 },
 		turretRotation: 0,
 		rotation: 0,
@@ -70,7 +72,10 @@ World.prototype._fireBullet = function( tankName ) {
 	var bullet = this._ds.record.getRecord( bulletID );
 
 	bullet.set( {
-		position: tank.get( 'position' ),
+		position: {
+			x: tank.get( 'position.x' ),
+			y: tank.get( 'position.y' ) - 5
+		},
 		dimensions: { 
 			x: 12, 
 			y: 26 
@@ -276,7 +281,12 @@ World.prototype._getInitialPosition = function() {
 };
 
 World.prototype._getColor = function() {
-	return 1;
+	return Math.floor( ( Math.random() * 4 ) + 1 );
+};
+
+World.prototype._getSymbol = function() {
+	var symbol = symbols[ Math.floor( ( Math.random() * symbols.length ) + 1 ) ];
+	return symbol;
 };
 
 module.exports = World;
