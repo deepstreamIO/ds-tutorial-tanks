@@ -59,7 +59,7 @@ define(function( require ){
                 tankControl.set( 'turretRotation', utils.toRadians( tankView.get( 'position' ), e.offsetX, e.offsetY ) );
                 //utils.aimAtAnyTank( tankControl, tankView, tanksList );
 
-                utils.rotateToPoint( e.offsetX, e.offsetY );
+                //utils.rotateToPoint( e.offsetX, e.offsetY );
             }
         };
 
