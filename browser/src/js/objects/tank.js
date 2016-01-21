@@ -6,11 +6,12 @@ define(function( require ){
         'Beige',
         'Black',
         'Blue',
-        'Green',
-        'Red'
+        'Green'
+        //'Red'
     ];
 
     function Tank( settings ) {
+        console.log(settings.me);
         this._settings = settings;
 
         this._container = new PIXI.Container();
@@ -18,7 +19,7 @@ define(function( require ){
         this._container.position.x = settings.position.x;
         this._container.position.y = settings.position.y;
 
-        this._color = COLORS[ settings.color ];
+        this._color = settings.me ? 'Red' : COLORS[ settings.color ];
 
         // Body
         this._body = PIXI.Sprite.fromFrame( 'tank' + this._color + '.png' );
@@ -34,7 +35,7 @@ define(function( require ){
         this._container.addChild( this._symbol );
 
         // Tank name + kills + deaths
-        this._name = new PIXI.Text( settings.name + "(" + settings.kills + "/" + settings.died + ")", {font:"20px Comic Sans MS", fill: "pink"} )
+        this._name = new PIXI.Text( settings.name + "(" + settings.kills + "/" + settings.died + ")", {font:"20px Comic Sans MS", fill: "black"} )
         this._name.pivot.x = 30;
         this._name.pivot.y = 70;
         this._container.addChild( this._name );
@@ -44,7 +45,7 @@ define(function( require ){
         for(var i = 0; i < parseInt(settings.health, 10); i++) {
             tankHealth += '♥';
         }
-        this._health = new PIXI.Text( tankHealth, {font:"20px Comic Sans MS", fill: "pink"} )
+        this._health = new PIXI.Text( tankHealth, {font:"20px Comic Sans MS", fill: "black"} )
         this._health.pivot.x = 20;
         this._health.pivot.y = -30;
         this._container.addChild( this._health );
