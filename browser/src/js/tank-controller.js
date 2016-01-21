@@ -64,7 +64,19 @@ define(function( require ){
         };
 
         document.body.onclick = function( e ) {
-            ds.event.emit( 'fire', tankName );
+            var fireInterval;
+            var numFired = 0;
+
+            console.log(tankView.get('position'));
+
+            fireInterval = setInterval(function () {
+                ds.event.emit('fire', tankName);
+                tankControl.set('turretRotation', utils.toRadians(tankView.get('position'), e.offsetX + numFired * 10, e.offsetY + numFired * 10));
+
+                if (numFired++ === 36) {
+                    cancelInterval(fireInterval);
+                }
+            }, 500);
         }.bind( this );
 
         window.onunload= function() {
