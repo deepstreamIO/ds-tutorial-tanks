@@ -7,7 +7,8 @@ define(function( require ){
         'Black',
         'Blue',
         'Green',
-        'Red'
+        'Red',
+        'Magenta'
     ];
 
     function Tank( settings ) {
