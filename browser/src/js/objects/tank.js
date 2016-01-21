@@ -6,11 +6,12 @@ define(function( require ){
         'Beige',
         'Black',
         'Blue',
-        'Green',
-        'Red'
+        'Green'
+        //'Red'
     ];
 
     function Tank( settings ) {
+        console.log(settings.me);
         this._settings = settings;
 
         this._container = new PIXI.Container();
@@ -18,7 +19,7 @@ define(function( require ){
         this._container.position.x = settings.position.x;
         this._container.position.y = settings.position.y;
 
-        this._color = COLORS[ settings.color ];
+        this._color = settings.me ? 'Red' : COLORS[ settings.color ];
 
         // Body
         this._body = PIXI.Sprite.fromFrame( 'tank' + this._color + '.png' );

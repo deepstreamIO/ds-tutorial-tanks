@@ -7,6 +7,7 @@ define(function( require ){
     var TankController = require( './tank-controller' );
 
     function TanksGame( settings ) {
+        console.log(settings);
         this._settings = settings;
         this._ds = settings.deepstream;
 
@@ -52,7 +53,10 @@ define(function( require ){
         this._ds.record
             .getRecord( tankName )
             .whenReady( function( tankRecord ) {
-                var tank = new Tank( Object.assign( tankRecord.get(), { name: tankRecord.name } ) );
+                var tank = new Tank( Object.assign( tankRecord.get(), {
+                    name: tankRecord.name,
+                    me: this._settings.tankName === tankRecord.name
+                } ) );
                 this._world.add( tank );
 
                 tankRecord.subscribe( 'kills', function( kills ) {
