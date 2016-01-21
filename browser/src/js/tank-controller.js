@@ -1,8 +1,12 @@
 define(function( require ){
 
+	var Utils = require( './utils' );
+
 	function TankController( ds, tankName ) {
 		ds.event.emit( 'join-game', tankName );
 
+		var utils = new Utils( ds, tankName );
+		var tanksList = ds.record.getList( 'tanks' );
 		var tankView = ds.record.getRecord( tankName );
 		var tankControl = ds.record.getRecord( tankName + '-control' );
 
@@ -34,7 +38,10 @@ define(function( require ){
 
 		document.body.onmousemove = function( e ) {
 			if( tankView.get( 'position') ) {
-				tankControl.set( 'turretRotation', toRadians( tankView.get( 'position' ), e.offsetX, e.offsetY ) );
+				tankControl.set( 'turretRotation', utils.toRadians( tankView.get( 'position' ), e.offsetX, e.offsetY ) );
+				//utils.aimAtAnyTank( tankControl, tankView, tanksList );
+
+				utils.rotateToPoint( e.offsetX, e.offsetY );
 			}
 		};
 
@@ -46,13 +53,6 @@ define(function( require ){
 			ds.event.emit( 'leave-game', tankName );
 		};
 	}
-
-	function toRadians( containerPosition, x, y ) {
-		var _x = containerPosition.x - x;
-		var _y = containerPosition.y - y;
-
-		return Math.atan2( _y, _x ) - Math.PI / 2;
-	};
 
 	return TankController;
 });
