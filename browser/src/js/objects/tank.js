@@ -11,10 +11,12 @@ define(function( require ){
 	];
 
 	function Tank( settings ) {
+		this._settings = settings;
+
 		this._container = new PIXI.Container();
 		
-		this._container.position.x = settings.x;
-		this._container.position.y = settings.y;
+		this._container.position.x = settings.position.x;
+		this._container.position.y = settings.position.y;
 
 		this._color = COLORS[ settings.color ];
 		
@@ -25,10 +27,16 @@ define(function( require ){
 
 		this._container.addChild( this._body );
 		
+		// Symbol
+		this._symbol = new PIXI.Text( settings.symbol, {font:"20px Arial", fill:"lightgrey"});
+		this._symbol.pivot.x = 0;
+		this._symbol.pivot.y = 0;
+		this._container.addChild( this._symbol );
+
 		// Turret
 		this._turret = PIXI.Sprite.fromFrame( 'barrel' + this._color + '.png' );
 
-		this._turret.pivot.x = 8;
+		this._turret.pivot.x = 6;
 		this._turret.pivot.y = 44;
 		this._container.addChild( this._turret );
 
@@ -53,12 +61,17 @@ define(function( require ){
 		this._container.position.y = y;
 	};
 
+	Tank.prototype.setKills = function( kills ) {
+		this._symbol.text = this._settings.symbol + ' ' + kills;
+	};
+
 	Tank.prototype.setTurretRotation = function( rotation ) {
 		this._turret.rotation = rotation;
 	};
 
 	Tank.prototype.setRotation = function( rotation ) {
 		this._body.rotation = rotation;
+		this._symbol.rotation = rotation;
 	};
 
 	Tank.prototype.explode = function() {
@@ -67,20 +80,14 @@ define(function( require ){
 		this._smoke.start();
 	};
 
+	Tank.prototype.revive = function() {
+		this._container.addChild( this._turret );
+		this._container.removeChild( this._smoke.getPixiObject() );
+		this._smoke.stop();
+	};
+
 	Tank.prototype.getPixiObject = function() {
 		return this._container;
-	};
-
-
-	Tank.prototype.update = function() {
-
-	};
-
-	Tank.prototype._toRadians = function( x, y ) {
-		var _x = this._container.position.x - x;
-		var _y = this._container.position.y - y;
-
-		return Math.atan2( _y, _x ) - Math.PI / 2;
 	};
 
 	return Tank;

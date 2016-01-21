@@ -33,7 +33,7 @@ html, body{
 	pointer-events: none;
 }
 #objects-overlay{
-	background: url(../img/bg-objects.png);
+	/**background: url(../img/bg-objects.png);**/
 }
 
 #trees-overlay{
