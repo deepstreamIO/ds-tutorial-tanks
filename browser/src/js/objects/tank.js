@@ -33,6 +33,12 @@ define(function( require ){
 		this._symbol.pivot.y = 0;
 		this._container.addChild( this._symbol );
 
+		// Tank name
+		this._name = new PIXI.Text( settings.name, {font:"20px Comic Sans MS", fill: "black"} )
+		this._name.pivot.x = 15;
+		this._name.pivot.y = 70;
+		this._container.addChild( this._name );
+
 		// Turret
 		this._turret = PIXI.Sprite.fromFrame( 'barrel' + this._color + '.png' );
 
