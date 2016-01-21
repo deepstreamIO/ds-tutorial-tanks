@@ -52,7 +52,7 @@ define(function( require ){
         this._ds.record
             .getRecord( tankName )
             .whenReady( function( tankRecord ) {
-                var tank = new Tank( tankRecord.get() );
+                var tank = new Tank( Object.assign( tankRecord.get(), { name: tankRecord.name } ) );
                 this._world.add( tank );
 
                 tankRecord.subscribe( 'kills', function( kills ) {
