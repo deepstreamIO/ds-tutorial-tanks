@@ -34,7 +34,7 @@ define(function( require ){
     this._container.addChild( this._symbol );
 
     // Tank name + kills + deaths
-    this._name = new PIXI.Text( settings.name + "(" + settings.kills + "/" + settings.died + ")", {font:"20px Comic Sans MS", fill: "black"} )
+    this._name = new PIXI.Text( settings.name, {font:"20px Comic Sans MS", fill: "black"} )
     this._name.pivot.x = 30;
     this._name.pivot.y = 70;
     this._container.addChild( this._name );
