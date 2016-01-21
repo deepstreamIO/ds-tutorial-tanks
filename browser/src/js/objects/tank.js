@@ -33,11 +33,21 @@ define(function( require ){
 		this._symbol.pivot.y = 0;
 		this._container.addChild( this._symbol );
 
-		// Tank name
-		this._name = new PIXI.Text( settings.name, {font:"20px Comic Sans MS", fill: "black"} )
-		this._name.pivot.x = 15;
+		// Tank name + kills + deaths
+		this._name = new PIXI.Text( settings.name + "(" + settings.kills + "/" + settings.died + ")", {font:"20px Comic Sans MS", fill: "black"} )
+		this._name.pivot.x = 30;
 		this._name.pivot.y = 70;
 		this._container.addChild( this._name );
+
+		// Tank health
+		var tankHealth = '';
+		for(var i = 0; i < parseInt(settings.health, 10); i++) {
+			tankHealth += '♥';
+		}
+		this._health = new PIXI.Text( tankHealth, {font:"20px Comic Sans MS", fill: "black"} )
+		this._health.pivot.x = 20;
+		this._health.pivot.y = -30;
+		this._container.addChild( this._health );
 
 		// Turret
 		this._turret = PIXI.Sprite.fromFrame( 'barrel' + this._color + '.png' );
