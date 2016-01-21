@@ -68,6 +68,10 @@ World.prototype._createTank = function( tankName ) {
 };
 
 World.prototype._fireBullet = function( tankName ) {
+	if( !this._tanks[ tankName ] ) {
+		return;
+	}
+	
 	var tank = this._tanks[ tankName ].view;
 	if( tank.get( 'destroyed') ) {
 		return;
