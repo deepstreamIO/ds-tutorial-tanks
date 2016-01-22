@@ -8,6 +8,7 @@
 		"x": 12, 
 		"y": 26 
 	},
+	"bulletReload": 1000,
 	
 	"tankSpeed": 1,
 	"tankDimensions": { 

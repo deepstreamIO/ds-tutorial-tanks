@@ -75,7 +75,8 @@ Tanks.prototype._createTank = function( tankName ) {
 		destroyed: false,
 		health: 3,
 		kills: 0, 
-		died: 0
+		died: 0,
+		lastShotTime: Date.now()
 	} );
 
 	var tankControl = this._ds.record.getRecord( tankName + '-control' );
@@ -191,7 +192,7 @@ Tanks.prototype._getInitialPosition = function( tankName ) {
 };
 
 Tanks.prototype._getColor = function() {
-	return Math.floor( ( Math.random() * 4 ) + 1 );
+	return Math.floor( ( Math.random() * 3 ) + 1 );
 };
 
 Tanks.prototype._increaseTankStats = function( tankName, stat ) {

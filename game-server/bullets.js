@@ -27,6 +27,13 @@ Bullets.prototype._fireBullet = function( tankName ) {
 	var bullet = this._ds.record.getRecord( bulletID );
 	var tank = this._ds.record.getRecord( tankName );
 
+	var time = Date.now();
+	if( time - tank.get( 'lastShotTime' ) < config.bulletReload ) {
+		return;
+	} else {
+		tank.set( 'lastShotTime', time );
+	}
+
 	bullet.set( {
 		position: {
 			x: tank.get( 'position.x' ),

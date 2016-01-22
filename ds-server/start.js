@@ -22,11 +22,17 @@ deepstream.set( 'permissionHandler', {
 		callback( null, true );
 	},
 	onClientDisconnect: function( username ) {
-		console.log( arguments )
+		console.log( username )
 		delete users[ username ];
 	}
 });
 
-deepstream.set( 'dataTransforms', [] );
+deepstream.set( 'dataTransforms', [ {
+    topic: 'E',
+    action: 'EVT',
+    transform: function( data, metaData ) {
+        return metaData.sender;
+    }
+}]);
 
 deepstream.start();

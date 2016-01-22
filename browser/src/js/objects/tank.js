@@ -7,19 +7,16 @@ define(function( require ){
         'Black',
         'Blue',
         'Green'
-        //'Red'
     ];
 
-    function Tank( settings ) {
-        console.log(settings.me);
-        this._settings = settings;
+    function Tank( tankName, data, isPlayer ) {
+ 		this.tankName = tankName;
 
         this._container = new PIXI.Container();
 
-        this._container.position.x = settings.position.x;
-        this._container.position.y = settings.position.y;
+		this._color = isPlayer ? 'Red' : COLORS[ data.color ];
 
-        this._color = settings.me ? 'Red' : COLORS[ settings.color ];
+        this.setPosition( data.position.x, data.position.y );
 
         // Body
         this._body = PIXI.Sprite.fromFrame( 'tank' + this._color + '.png' );
@@ -28,31 +25,21 @@ define(function( require ){
 
         this._container.addChild( this._body );
 
-        // Symbol
-        this._symbol = new PIXI.Text( settings.symbol, {font:"20px Arial", fill:"lightgrey"});
-        this._symbol.pivot.x = 0;
-        this._symbol.pivot.y = 0;
-        this._container.addChild( this._symbol );
-
-        // Tank name + kills + deaths
-        this._name = new PIXI.Text( settings.name + "(" + settings.kills + "/" + settings.died + ")", {font:"20px Comic Sans MS", fill: "black"} )
+        // Tank name + kills + died
+        this._name = new PIXI.Text( '', {font:'20px Comic Sans MS', fill: 'black'} );
+        this.setMetaData( data.kills, data.died );
         this._name.pivot.x = 30;
         this._name.pivot.y = 70;
         this._container.addChild( this._name );
 
-        // Tank health
-        var tankHealth = '';
-        for(var i = 0; i < parseInt(settings.health, 10); i++) {
-            tankHealth += '♥';
-        }
-        this._health = new PIXI.Text( tankHealth, {font:"20px Comic Sans MS", fill: "black"} )
+        this._health = new PIXI.Text( '', {font:'20px Comic Sans MS', fill: 'black'} );
+        this.setHealth( data.health );
         this._health.pivot.x = 20;
         this._health.pivot.y = -30;
         this._container.addChild( this._health );
 
         // Turret
         this._turret = PIXI.Sprite.fromFrame( 'barrel' + this._color + '.png' );
-
         this._turret.pivot.x = 6;
         this._turret.pivot.y = 44;
         this._container.addChild( this._turret );
@@ -78,17 +65,25 @@ define(function( require ){
         this._container.position.y = y;
     };
 
-    Tank.prototype.setKills = function( kills ) {
-        this._symbol.text = this._settings.symbol + ' ' + kills;
+	Tank.prototype.setRotation = function( rotation ) {
+        this._body.rotation = rotation;
+    };
+
+    Tank.prototype.setMetaData = function( kills, died ) {
+        this._name.text = this.tankName + "(" + kills + "/" + died + ")";
+    };
+
+    Tank.prototype.setHealth = function( health ) {
+    	// Tank health
+        var tankHealth = '';
+        for(var i = 0; i<health; i++) {
+            tankHealth += '♥';
+        }
+        this._health.text = tankHealth;
     };
 
     Tank.prototype.setTurretRotation = function( rotation ) {
         this._turret.rotation = rotation;
-    };
-
-    Tank.prototype.setRotation = function( rotation ) {
-        this._body.rotation = rotation;
-        this._symbol.rotation = rotation;
     };
 
     Tank.prototype.explode = function() {
