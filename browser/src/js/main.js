@@ -7,16 +7,22 @@ requirejs.config({
 });
 
 require( ['tanks-game', 'deepstream' ], function( TanksGame, deepstream ){
-    var name = getQueryParams( window.location.search ).tankName;
-    var ds = deepstream( '52.29.184.11:6020' ).login( { username: name }, function( valid ) {
+	var queryParams = getQueryParams( window.location.search );
+    var name = queryParams.tankName;
+    var ds = deepstream( 'localhost:6020' ).login( { username: name }, function( valid ) {
         if( valid ) {
+        	ds.event.emit( 'join-game' );
             new TanksGame({
                 container: document.getElementById( 'pixi-container' ),
                 width: 1600,
                 height: 900,
                 deepstream: ds,
-                tankName: name
+                tankName: name,
+                controller: queryParams.controller
             });
+            window.onunload= function() {
+    	        ds.event.emit( 'leave-game' );
+        	};
         } else {
             console.log( arguments, name );
         }

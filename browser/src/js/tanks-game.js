@@ -4,7 +4,8 @@ define(function( require ){
     var Tank = require( 'objects/tank' );
     var Bullet = require( 'objects/bullet' );
 
-    var TankController = require( './tank-controller' );
+    var ManualTankController = require( './controllers/manual' );
+    var AimBot = require( './controllers/aim-bot' );
 
     function TanksGame( settings ) {
         console.log(settings);
@@ -26,7 +27,13 @@ define(function( require ){
         /**
         * Create Tank Controls
         **/
-        this._settings.tankName && new TankController( this._ds, this._settings.tankName );
+        switch( this._settings.controller ) {
+            case 'aimbot': 
+                new AimBot( this._ds, this._settings.tankName );
+                break;
+            default:
+                new ManualTankController( this._ds, this._settings.tankName );
+        }
 
         /**
         * Listen to Tanks
@@ -53,14 +60,23 @@ define(function( require ){
         this._ds.record
             .getRecord( tankName )
             .whenReady( function( tankRecord ) {
-                var tank = new Tank( Object.assign( tankRecord.get(), {
-                    name: tankRecord.name,
-                    me: this._settings.tankName === tankRecord.name
-                } ) );
+                var tank = new Tank( 
+                    tankRecord.name,
+                    tankRecord.get(), 
+                    this._settings.tankName === tankRecord.name
+                );
                 this._world.add( tank );
 
                 tankRecord.subscribe( 'kills', function( kills ) {
-                    tank.setKills( kills );
+                    tank.setMetaData( kills, tankRecord.get( 'died' ) );
+                });
+
+                tankRecord.subscribe( 'died', function( died ) {
+                    tank.setMetaData( tankRecord.get( 'kills' ), died );
+                });
+
+                tankRecord.subscribe( 'health', function( health ) {
+                    tank.setHealth( health );
                 });
 
                 tankRecord.subscribe( 'rotation', function( rotation ) {
@@ -95,7 +111,6 @@ define(function( require ){
         this._ds.record
             .getRecord( bulletID )
             .whenReady( function( bulletRecord ) {
-
                 var bullet = new Bullet( bulletRecord.get() );
                 this._world.addToBottom( bullet );
 
