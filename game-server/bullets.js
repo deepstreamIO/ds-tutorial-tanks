@@ -5,7 +5,6 @@ function Bullets( ds, tanks ) {
 	this._ds = ds;
 	this._tanks = tanks;
 
-	this._bullets = {};
 	this._bulletsList = this._ds.record.getList( 'bullets' );
 	this._bulletsList.setEntries( [] );
 	this._ds.event.subscribe( 'fire', this._fireBullet.bind( this ) );
@@ -23,8 +22,6 @@ Bullets.prototype._fireBullet = function( tankName ) {
 		return;
 	}
 	
-	var bulletID = this._ds.getUid();
-	var bullet = this._ds.record.getRecord( bulletID );
 	var tank = this._ds.record.getRecord( tankName );
 
 	var time = Date.now();
@@ -34,19 +31,7 @@ Bullets.prototype._fireBullet = function( tankName ) {
 		tank.set( 'lastShotTime', time );
 	}
 
-	bullet.set( {
-		position: {
-			x: tank.get( 'position.x' ),
-			y: tank.get( 'position.y' )
-		},
-		rotation: tank.get( 'turretRotation' ),
-		rangeRemaining: config.bulletRange,
-		owner: tankName
-	} );
-
-	bullet.whenReady( function() {
-		this._bulletsList.addEntry( bulletID );
-	}.bind( this ) );
+	this._createBullet( tank );
 };
 
 Bullets.prototype._moveBullet = function( bullet, tanks ) {
@@ -75,7 +60,44 @@ Bullets.prototype._moveBullet = function( bullet, tanks ) {
 
 Bullets.prototype._destroyBullet = function( bullet ) {
 	this._bulletsList.removeEntry( bullet.name );
-	bullet.delete();
+	bullet.set( 'destroyed', true );
+};
+
+Bullets.prototype._createBullet = function( tank ) {
+	var bullets = this._bulletsList.getEntries();
+	var bullet;
+	var foundBullet = false;
+
+	for( var i=0; i<bullets.length; i++ ) {
+		bullet = this._ds.record.getRecord( bullets[ i ] );
+		if( bullet.get( 'destroyed' ) ) {
+			foundBullet = true;
+			break;
+		}
+	}
+
+	if( !foundBullet ) {
+		bullet = this._ds.record.getRecord( 'bullet-' + bullets.length );
+	}
+
+	bullet.set( {
+		position: {
+			x: tank.get( 'position.x' ),
+			y: tank.get( 'position.y' )
+		},
+		rotation: tank.get( 'turretRotation' ),
+		rangeRemaining: config.bulletRange,
+		owner: tank.name,
+		destroyed: false
+	} );
+
+	if( !foundBullet ) {
+		bullet.whenReady( function( bullet ) {
+			this._bulletsList.addEntry( bullet.name );
+		}.bind( this ) );
+	}
+
+	return bullet;
 };
 
 module.exports = Bullets;

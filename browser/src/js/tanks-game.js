@@ -111,19 +111,27 @@ define(function( require ){
         this._ds.record
             .getRecord( bulletID )
             .whenReady( function( bulletRecord ) {
+                
                 var bullet = new Bullet( bulletRecord.get() );
-                this._world.addToBottom( bullet );
 
                 bulletRecord.subscribe( 'position', function( position ) {
                     bullet.setPosition( position.x, position.y );
-                });
+                } );
+
+                bulletRecord.subscribe( 'destroyed', function( destroyed ) {
+                    if( destroyed ) {
+                        this._world.remove( bullet );
+                    } else {
+                        this._world.addToBottom( bullet );
+                    }
+                }.bind( this ), true );
 
                 this._bullets[ bulletID ] = bullet;
             }.bind( this ) );
     };
 
     function bulletRemoved( bulletID ) {
-        this._world.remove( this._bullets[ bulletID ] );
+        //We don't remove bullets since we use object pooling
     };
 
     return TanksGame;
