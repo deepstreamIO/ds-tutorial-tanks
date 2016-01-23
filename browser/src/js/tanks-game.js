@@ -4,11 +4,11 @@ define(function( require ){
     var Tank = require( 'objects/tank' );
     var Bullet = require( 'objects/bullet' );
 
-    var ManualTankController = require( './controllers/manual' );
+    var ManualControl = require( './controllers/manual-control' );
     var AimBot = require( './controllers/aim-bot' );
+    var EvadeBot = require( './controllers/evade-bot' );
 
     function TanksGame( settings ) {
-        console.log(settings);
         this._settings = settings;
         this._ds = settings.deepstream;
 
@@ -31,8 +31,11 @@ define(function( require ){
             case 'aimbot': 
                 new AimBot( this._ds, this._settings.tankName );
                 break;
+            case 'evadebot': 
+                new EvadeBot( this._ds, this._settings.tankName );
+                break;
             default:
-                new ManualTankController( this._ds, this._settings.tankName );
+                new ManualControl( this._ds, this._settings.tankName );
         }
 
         /**

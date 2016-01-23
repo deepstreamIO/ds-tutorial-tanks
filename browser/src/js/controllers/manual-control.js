@@ -2,7 +2,7 @@ define(function( require ){
 
     var AIHelper = require( './ai-helper' );
 
-    function TankController( ds, tankName ) {
+    function ManualControl( ds, tankName ) {
 
         var ai = new AIHelper( ds, tankName );
         var tanksList = ds.record.getList( 'tanks' );
@@ -62,5 +62,5 @@ define(function( require ){
         }.bind( this );
     }
 
-    return TankController;
+    return ManualControl;
 });

@@ -14,7 +14,7 @@ define(function( require ){
 		var _x = containerPosition.x - x;
 		var _y = containerPosition.y - y;
 
-		return Math.atan2( _y, _x ) - Math.PI / 2;
+		return ( Math.atan2( _y, _x ) - Math.PI / 2 ) % ( 2 * Math.PI );
 	};
 
 	AIHelper.prototype.aimAtTank = function( enemyTank ) {
@@ -54,30 +54,19 @@ define(function( require ){
 		window.clearTimeout( this._rotatingTimeout );
 
 		var expectedRotation = this.toRadians( this._tankView.get( 'position' ), x, y );
-		var moveLeft = expectedRotation < 0;
-		if( moveLeft ) {
-			expectedRotation = ( Math.PI * 2 ) + expectedRotation;
+		if( expectedRotation < 0 && Math.abs( expectedRotation ) > Math.PI ) {
+		 	expectedRotation =  expectedRotation + (2 * Math.PI);
 		}
-		
-		var diff = Math.abs( expectedRotation - this._tankView.get( 'rotation' ) );
-		if( moveLeft ) {
-			if(  diff > 0.1 ) {
-				this._tankControl.set( 'direction.left', true );
-				this._rotatingTimeout = window.setTimeout( this.rotateToPoint.bind( this, x, y ), 50 );
-			} else {
-				this._tankControl.set( 'direction.left', false );
-			}
-			this._tankControl.set( 'direction.right', false );
-			
+
+		var diff = ( this._tankView.get( 'rotation' ) - expectedRotation ) % Math.PI;
+		if( diff > 0.1 || diff < -0.1 ) {
+		 		this._tankControl.set( 'direction.left', diff > 0.1 );
+				this._tankControl.set( 'direction.right', diff < -0.1 );
+				this._rotatingTimeout = window.setTimeout( this.rotateToPoint.bind( this, x, y ), 50 );		
 		} else {
-			if(  diff > 0.1 ) {
-				this._tankControl.set( 'direction.right', true );
-				this._rotatingTimeout = window.setTimeout( this.rotateToPoint.bind( this, x, y ), 50 );
-			} else {
 				this._tankControl.set( 'direction.right', false );
-			}
-			this._tankControl.set( 'direction.left', false );
-		}
+				this._tankControl.set( 'direction.left', false );
+		} 
 	};
 
 	return AIHelper;
