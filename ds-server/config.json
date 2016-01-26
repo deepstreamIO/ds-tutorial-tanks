@@ -1,0 +1,10 @@
+{
+	"gameServerName": "game-server",
+	"gameServerPassword": "complicated",
+
+	"httpHost": "0.0.0.0",
+	"httpPort": 6020,
+
+	"tcpHost": "0.0.0.0",
+	"tcpPort": 6021
+}

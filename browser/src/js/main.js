@@ -9,7 +9,7 @@ requirejs.config({
 require( ['tanks-game', 'deepstream' ], function( TanksGame, deepstream ){
 	var queryParams = getQueryParams( window.location.search );
     var name = queryParams.tankName;
-    var ds = deepstream( 'localhost:6020' ).login( { username: name }, function( valid ) {
+    var ds = deepstream( '52.28.240.163:6020' ).login( { username: name }, function( valid ) {
         if( valid ) {
         	ds.event.emit( 'join-game' );
             new TanksGame({

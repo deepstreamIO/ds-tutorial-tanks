@@ -1,12 +1,13 @@
 var deepstream = require( 'deepstream.io-client-js' );
 
+var config = require( './config' );
 var Tanks = require( './tanks' );
 var Bullets = require( './bullets' );
 var tanks, bullets;
 
 function start() {
 	var ds = deepstream( 'localhost:6021' );
-	ds.login( { username: 'server' }, function() {
+	ds.login( { username: config.gameServerName, password: config.gameServerPassword }, function() {
 		tanks = new Tanks( ds );
 		bullets = new Bullets( ds, tanks );
 		updateState();

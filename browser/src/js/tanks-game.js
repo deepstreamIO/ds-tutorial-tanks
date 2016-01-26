@@ -13,7 +13,6 @@ define(function( require ){
         this._ds = settings.deepstream;
 
         this._tanks = {};
-        this._bullets = {};
 
         this._loader = new PIXI.loaders.Loader();
         this._loader.add( 'src/img/sprite-sheet.json' );
@@ -125,11 +124,10 @@ define(function( require ){
                     if( destroyed ) {
                         this._world.remove( bullet );
                     } else {
+                        console.log( 'adding' )
                         this._world.addToBottom( bullet );
                     }
                 }.bind( this ), true );
-
-                this._bullets[ bulletID ] = bullet;
             }.bind( this ) );
     };
 

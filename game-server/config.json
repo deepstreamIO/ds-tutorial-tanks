@@ -1,4 +1,7 @@
 {
+	"gameServerName": "game-server",
+	"gameServerPassword": "complicated",
+
 	"width": 1600,
 	"height": 900,
 
