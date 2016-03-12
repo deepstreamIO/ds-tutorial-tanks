@@ -1,0 +1,15 @@
+{
+  "name": "ds-tutorial-tanks-game-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "start.js",
+  "dependencies": {
+    "deepstream.io-client-js": "latest"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT"
+}

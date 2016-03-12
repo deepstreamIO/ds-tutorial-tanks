@@ -3,12 +3,18 @@
 ## Install
 
 ```
-Start the server
+Start the ds-server
 
-1. cd to the project
-2. cd ds-server
-3. npm install deepstream.io
+1. cd ds-server
+2. npm install
 3. node start.js
+
+Start the game-server
+
+1. cd game-server
+2. npm install
+3. node start.js
+
 
 Start the browser game in another terminal window
 
