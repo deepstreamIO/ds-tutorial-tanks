@@ -1,5 +1,7 @@
 # ds-tutorial-tanks
 
+![Tanks!](https://deepstream.io/assets/images/events/deepsteam-game-workshop.png "Screenshot of game")
+
 ## Install
 
 ```
