@@ -10,6 +10,7 @@ deepstream.set( 'tcpPort', 6021 );
 
 var users = {};
 deepstream.set( 'permissionHandler', {
+	isReady: true,
 	isValidUser: function( handshakeData, authData, callback ) {
 		if( !users[ authData.username ] ) {
 			users[ authData.username ] = true;

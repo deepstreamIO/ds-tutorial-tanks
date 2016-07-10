@@ -16,6 +16,6 @@
   "dependencies": {
     "pixi.js": "~3.0.9",
     "requirejs": "~2.1.22",
-    "deepstream.io-client-js": "~0.3.8"
+    "deepstream.io-client-js": "^1.0.0"
   }
 }
