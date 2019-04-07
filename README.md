@@ -1,5 +1,7 @@
 # ds-tutorial-tanks
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/deepstreamIO/ds-tutorial-tanks.svg)](https://greenkeeper.io/)
+
 ![Tanks!](https://deepstream.io/assets/images/events/deepsteam-game-workshop.png "Screenshot of game")
 
 ## Install
