@@ -4,7 +4,7 @@
   "description": "",
   "main": "start.js",
   "dependencies": {
-    "deepstream.io": "latest"
+    "deepstream.io": "^1.1.1"
   },
   "devDependencies": {},
   "scripts": {
